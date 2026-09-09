@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import Logo from './Logo';
+import CuisineFilter from './CuisineFilter';
 import type { ExtractSuccess, Site } from '../lib/types';
 
 type Props = {
@@ -142,28 +143,7 @@ export default function ResultsView({ data, onRetry }: Props) {
           <label style={{ fontSize: 13, fontWeight: 600, display: 'block', marginBottom: 8 }}>
             Tipo de cocina
           </label>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-            {cuisines.map((c) => {
-              const active = selectedCuisines.has(c);
-              return (
-                <button
-                  key={c}
-                  onClick={() => toggleCuisine(c)}
-                  style={{
-                    padding: '6px 12px',
-                    borderRadius: 999,
-                    fontSize: 13,
-                    border: `1.5px solid ${active ? 'var(--olive-leaf-dark)' : 'var(--card-border)'}`,
-                    background: active ? 'var(--olive-leaf)' : '#fff',
-                    color: active ? '#fdf7e2' : 'var(--black-forest)',
-                    cursor: 'pointer',
-                  }}
-                >
-                  {c}
-                </button>
-              );
-            })}
-          </div>
+          <CuisineFilter cuisines={cuisines} selected={selectedCuisines} onToggle={toggleCuisine} />
         </div>
       </div>
 
