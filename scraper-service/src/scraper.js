@@ -213,7 +213,7 @@ async function scrapeMapsList(url) {
     await page.setExtraHTTPHeaders({ 'Accept-Language': 'es-ES,es;q=0.9' });
 
     try {
-      await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 30000 });
+      await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 45000 });
     } catch (err) {
       throw new ScrapeError('list_unreachable', `No se pudo abrir la URL: ${err.message}`);
     }
