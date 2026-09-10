@@ -31,7 +31,9 @@ router.post('/extract', async (req, res) => {
   } catch (err) {
     if (err instanceof ScrapeError) {
       const status = ERROR_STATUS[err.code] || 500;
-      return res.status(status).json({ success: false, errorCode: err.code, message: err.message });
+      return res
+        .status(status)
+        .json({ success: false, errorCode: err.code, message: err.message, debug: err.debug });
     }
     console.error('internal_error', err);
     return res.status(500).json({

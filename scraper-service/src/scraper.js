@@ -21,9 +21,26 @@ const USER_AGENT =
   'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36';
 
 class ScrapeError extends Error {
-  constructor(code, message) {
+  constructor(code, message, debug) {
     super(message);
     this.code = code;
+    this.debug = debug;
+  }
+}
+
+// Diagnóstico temporal: cuando el panel de la lista no aparece, capturamos qué está
+// mostrando realmente la página (título, URL final tras redirecciones, primeras líneas de
+// texto) para saber si Google está sirviendo un muro de consentimiento distinto o un
+// bloqueo anti-bot en el entorno de despliegue. Quitar en cuanto se diagnostique la causa.
+async function captureDebugSnapshot(page) {
+  try {
+    return await page.evaluate(() => ({
+      url: window.location.href,
+      title: document.title,
+      bodySnippet: (document.body?.innerText || '').slice(0, 800),
+    }));
+  } catch (err) {
+    return { captureError: err.message };
   }
 }
 
@@ -81,7 +98,8 @@ async function waitForCards(page) {
       timeout: FEED_TIMEOUT_MS,
     });
   } catch (_) {
-    throw new ScrapeError('list_unreachable', 'No se pudo cargar el panel de la lista de Maps.');
+    const debug = await captureDebugSnapshot(page);
+    throw new ScrapeError('list_unreachable', 'No se pudo cargar el panel de la lista de Maps.', debug);
   }
 }
 
